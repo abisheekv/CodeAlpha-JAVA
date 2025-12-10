@@ -1,0 +1,63 @@
+import java.util.*;
+
+class SimpleNlpChatbot {
+    private Map<String, String> faqAnswers = new HashMap<>();
+
+    public SimpleNlpChatbot() {
+        // training: frequently asked questions
+        faqAnswers.put("hello", "Hi! How can I help you today?");
+        faqAnswers.put("hi", "Hello! Ask me anything.");
+        faqAnswers.put("how are you", "I'm just code, but running perfectly!");
+        faqAnswers.put("your name", "I'm a simple Java chatbot.");
+        faqAnswers.put("what is java", "Java is an object-oriented programming language used to build many types of applications.");
+        faqAnswers.put("creator", "I was created as a demo chatbot program.");
+        faqAnswers.put("help", "You can ask me about Java, basic programming or general greetings.");
+        faqAnswers.put("bye", "Goodbye! Have a nice day.");
+    }
+
+    // simple NLP: lowercase, remove punctuation, keyword search
+    private String normalize(String input) {
+        return input.toLowerCase().replaceAll("[^a-z0-9\\s]", "").trim();
+    }
+
+    public String getResponse(String userInput) {
+        String text = normalize(userInput);
+
+        // direct rule-based matching
+        for (String key : faqAnswers.keySet()) {
+            if (text.contains(key)) {
+                return faqAnswers.get(key);
+            }
+        }
+
+        // fallback intents
+        if (text.contains("thanks") || text.contains("thank you")) {
+            return "You're welcome!";
+        }
+        if (text.contains("java")) {
+            return "Java is platform independent and widely used for backend, Android, and enterprise apps.";
+        }
+
+        return "Sorry, I don't understand that yet. Try asking about Java or say 'help'.";
+    }
+}
+
+public class ChatbotApp {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        SimpleNlpChatbot bot = new SimpleNlpChatbot();
+
+        System.out.println("Simple Java Chatbot. Type 'exit' to quit.");
+        while (true) {
+            System.out.print("You: ");
+            String input = sc.nextLine();
+            if (input.equalsIgnoreCase("exit")) {
+                System.out.println("Bot: Bye! 👋");
+                break;
+            }
+            String reply = bot.getResponse(input);
+            System.out.println("Bot: " + reply);
+        }
+        sc.close();
+    }
+}
